@@ -149,18 +149,18 @@ const faqs = [
 </ToolLayout>
 
 <script>
-  let selectedFiles = [];
+  let selectedFiles: File[] = [];
   
   // Elements
-  const fileInput = document.getElementById('file-input');
-  const dropZone = document.getElementById('drop-zone');
-  const settingsPanel = document.getElementById('settings-panel');
-  const progressPanel = document.getElementById('progress-panel');
-  const resultsPanel = document.getElementById('results-panel');
-  const convertBtn = document.getElementById('convert-btn');
-  const resetBtn = document.getElementById('reset-btn');
-  const resultsContainer = document.getElementById('results-container');
-  const progressBar = document.getElementById('progress-bar');
+  const fileInput = document.getElementById('file-input') as HTMLInputElement;
+  const dropZone = document.getElementById('drop-zone') as HTMLElement;
+  const settingsPanel = document.getElementById('settings-panel') as HTMLElement;
+  const progressPanel = document.getElementById('progress-panel') as HTMLElement;
+  const resultsPanel = document.getElementById('results-panel') as HTMLElement;
+  const convertBtn = document.getElementById('convert-btn') as HTMLButtonElement;
+  const resetBtn = document.getElementById('reset-btn') as HTMLButtonElement;
+  const resultsContainer = document.getElementById('results-container') as HTMLElement;
+  const progressBar = document.getElementById('progress-bar') as HTMLElement;
 
   // Event listeners
   fileInput.addEventListener('change', handleFileSelection);
@@ -169,8 +169,9 @@ const faqs = [
   convertBtn.addEventListener('click', convertDocuments);
   resetBtn.addEventListener('click', resetConverter);
 
-  function handleFileSelection(e) {
-    selectedFiles = Array.from(e.target.files).filter(file => 
+  function handleFileSelection(e: Event) {
+    const target = e.target as HTMLInputElement;
+    selectedFiles = Array.from(target.files || []).filter(file => 
       file.name.toLowerCase().endsWith('.docx')
     );
     if (selectedFiles.length > 0) {
@@ -180,16 +181,16 @@ const faqs = [
     }
   }
 
-  function handleDragOver(e) {
+  function handleDragOver(e: DragEvent) {
     e.preventDefault();
     dropZone.classList.add('border-blue-400', 'bg-blue-50');
   }
 
-  function handleFileDrop(e) {
+  function handleFileDrop(e: DragEvent) {
     e.preventDefault();
     dropZone.classList.remove('border-blue-400', 'bg-blue-50');
     
-    const files = Array.from(e.dataTransfer.files).filter(file => 
+    const files = Array.from(e.dataTransfer?.files || []).filter(file => 
       file.name.toLowerCase().endsWith('.docx')
     );
     if (files.length > 0) {
@@ -215,10 +216,10 @@ const faqs = [
 
     // Get settings
     const settings = {
-      orientation: document.getElementById('page-orientation').value,
-      pageSize: document.getElementById('page-size').value,
-      preserveLinks: document.getElementById('preserve-links').checked,
-      preserveBookmarks: document.getElementById('preserve-bookmarks').checked
+      orientation: (document.getElementById('page-orientation') as HTMLSelectElement).value,
+      pageSize: (document.getElementById('page-size') as HTMLSelectElement).value,
+      preserveLinks: (document.getElementById('preserve-links') as HTMLInputElement).checked,
+      preserveBookmarks: (document.getElementById('preserve-bookmarks') as HTMLInputElement).checked
     };
 
     try {
@@ -257,7 +258,7 @@ const faqs = [
     }
   }
 
-  async function simulateConversion(file, settings) {
+  async function simulateConversion(file: File, settings: any) {
     // Simulate processing time
     return new Promise(resolve => {
       setTimeout(resolve, 1000 + Math.random() * 2000);
@@ -330,7 +331,7 @@ const faqs = [
     progressBar.style.width = '0%';
   }
 
-  function formatFileSize(bytes) {
+  function formatFileSize(bytes: number) {
     if (bytes === 0) return '0 Bytes';
     const k = 1024;
     const sizes = ['Bytes', 'KB', 'MB', 'GB'];

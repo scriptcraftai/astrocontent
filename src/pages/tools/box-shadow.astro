@@ -144,24 +144,24 @@ const faqs = [
 
 <script>
   // Shadow property elements
-  const hOffset = document.getElementById('horizontal-offset');
-  const vOffset = document.getElementById('vertical-offset');
-  const blurRadius = document.getElementById('blur-radius');
-  const spreadRadius = document.getElementById('spread-radius');
-  const shadowColor = document.getElementById('shadow-color');
-  const shadowOpacity = document.getElementById('shadow-opacity');
-  const insetShadow = document.getElementById('inset-shadow');
+  const hOffset = document.getElementById('horizontal-offset') as HTMLInputElement;
+  const vOffset = document.getElementById('vertical-offset') as HTMLInputElement;
+  const blurRadius = document.getElementById('blur-radius') as HTMLInputElement;
+  const spreadRadius = document.getElementById('spread-radius') as HTMLInputElement;
+  const shadowColor = document.getElementById('shadow-color') as HTMLInputElement;
+  const shadowOpacity = document.getElementById('shadow-opacity') as HTMLInputElement;
+  const insetShadow = document.getElementById('inset-shadow') as HTMLInputElement;
   
   // Value display elements
-  const hOffsetValue = document.getElementById('h-offset-value');
-  const vOffsetValue = document.getElementById('v-offset-value');
-  const blurValue = document.getElementById('blur-value');
-  const spreadValue = document.getElementById('spread-value');
-  const opacityValue = document.getElementById('opacity-value');
+  const hOffsetValue = document.getElementById('h-offset-value') as HTMLElement;
+  const vOffsetValue = document.getElementById('v-offset-value') as HTMLElement;
+  const blurValue = document.getElementById('blur-value') as HTMLElement;
+  const spreadValue = document.getElementById('spread-value') as HTMLElement;
+  const opacityValue = document.getElementById('opacity-value') as HTMLElement;
   
   // Preview and output elements
-  const previewElement = document.getElementById('preview-element');
-  const cssOutput = document.getElementById('css-output');
+  const previewElement = document.getElementById('preview-element') as HTMLElement;
+  const cssOutput = document.getElementById('css-output') as HTMLTextAreaElement;
 
   // Presets
   const presets = {
@@ -207,8 +207,8 @@ const faqs = [
     cssOutput.value = `box-shadow: ${shadowValue};`;
   }
 
-  function applyPreset(presetName) {
-    const preset = presets[presetName];
+  function applyPreset(presetName: string) {
+    const preset = presets[presetName as keyof typeof presets];
     
     hOffset.value = preset.h;
     vOffset.value = preset.v;

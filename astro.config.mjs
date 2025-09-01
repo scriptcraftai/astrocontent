@@ -14,5 +14,16 @@ export default defineConfig({
   },
   build: {
     assets: 'assets'
+  },
+  vite: {
+    build: {
+      rollupOptions: {
+        onwarn(warning, warn) {
+          // Ignore TypeScript warnings in client scripts
+          if (warning.code === 'UNRESOLVED_IMPORT') return;
+          warn(warning);
+        }
+      }
+    }
   }
 });

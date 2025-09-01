@@ -133,22 +133,22 @@ const faqs = [
 </ToolLayout>
 
 <script>
-  let selectedFiles = [];
+  let selectedFiles: File[] = [];
   
   // Elements
-  const fileInput = document.getElementById('file-input');
-  const dropZone = document.getElementById('drop-zone');
-  const settingsPanel = document.getElementById('settings-panel');
-  const previewPanel = document.getElementById('preview-panel');
-  const progressPanel = document.getElementById('progress-panel');
-  const qualitySlider = document.getElementById('quality-slider');
-  const qualityValue = document.getElementById('quality-value');
-  const backgroundColorInput = document.getElementById('background-color');
-  const backgroundPreset = document.getElementById('background-preset');
-  const convertBtn = document.getElementById('convert-btn');
-  const resetBtn = document.getElementById('reset-btn');
-  const resultsContainer = document.getElementById('results-container');
-  const progressBar = document.getElementById('progress-bar');
+  const fileInput = document.getElementById('file-input') as HTMLInputElement;
+  const dropZone = document.getElementById('drop-zone') as HTMLElement;
+  const settingsPanel = document.getElementById('settings-panel') as HTMLElement;
+  const previewPanel = document.getElementById('preview-panel') as HTMLElement;
+  const progressPanel = document.getElementById('progress-panel') as HTMLElement;
+  const qualitySlider = document.getElementById('quality-slider') as HTMLInputElement;
+  const qualityValue = document.getElementById('quality-value') as HTMLElement;
+  const backgroundColorInput = document.getElementById('background-color') as HTMLInputElement;
+  const backgroundPreset = document.getElementById('background-preset') as HTMLSelectElement;
+  const convertBtn = document.getElementById('convert-btn') as HTMLButtonElement;
+  const resetBtn = document.getElementById('reset-btn') as HTMLButtonElement;
+  const resultsContainer = document.getElementById('results-container') as HTMLElement;
+  const progressBar = document.getElementById('progress-bar') as HTMLElement;
 
   // Event listeners
   fileInput.addEventListener('change', handleFileSelection);
@@ -159,23 +159,24 @@ const faqs = [
   convertBtn.addEventListener('click', convertImages);
   resetBtn.addEventListener('click', resetConverter);
 
-  function handleFileSelection(e) {
-    selectedFiles = Array.from(e.target.files).filter(file => file.type === 'image/png');
+  function handleFileSelection(e: Event) {
+    const target = e.target as HTMLInputElement;
+    selectedFiles = Array.from(target.files || []).filter(file => file.type === 'image/png');
     if (selectedFiles.length > 0) {
       showSettings();
     }
   }
 
-  function handleDragOver(e) {
+  function handleDragOver(e: DragEvent) {
     e.preventDefault();
     dropZone.classList.add('border-blue-400', 'bg-blue-50');
   }
 
-  function handleFileDrop(e) {
+  function handleFileDrop(e: DragEvent) {
     e.preventDefault();
     dropZone.classList.remove('border-blue-400', 'bg-blue-50');
     
-    const files = Array.from(e.dataTransfer.files).filter(file => file.type === 'image/png');
+    const files = Array.from(e.dataTransfer?.files || []).filter(file => file.type === 'image/png');
     if (files.length > 0) {
       selectedFiles = files;
       showSettings();
