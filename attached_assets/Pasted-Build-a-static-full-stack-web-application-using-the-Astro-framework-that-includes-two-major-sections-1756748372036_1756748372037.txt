@@ -1,0 +1,146 @@
+Build a static full-stack web application using the Astro framework that includes two major sections: a Blog and a Tools Hub. The entire site should be statically generated and easily deployable on GitHub Pages.
+
+Requirements
+General Site
+
+Use Astro’s static site generation (SSG).
+
+Maintain a clear directory structure (e.g., /src/content, /src/pages, /src/components, /src/tools).
+
+Apply a basic, modern, and responsive CSS stylesheet for consistent styling.
+
+Include all necessary Astro configuration files (astro.config.mjs, package.json, GitHub Pages deploy setup).
+
+Optimize site performance, accessibility, and SEO best practices (fast loads, semantic HTML, proper heading hierarchy).
+
+Blog Section (Automation-Focused)
+
+Content Management
+
+Blog posts must be written in Markdown (.md) and stored in /src/content/blog.
+
+Each post should support frontmatter metadata (e.g., title, date, description, tags, workflowType).
+
+Homepage Blog List
+
+Show a list of blog posts on the homepage.
+
+Sort posts by date (descending).
+
+Display title, date, short description, and “Read More” link.
+
+Individual Blog Pages
+
+Generate dynamic routes (/blog/[slug]) for each post based on file name.
+
+Each blog post should describe an automation workflow (e.g., “Automating Invoices with Zapier”).
+
+Automation Recommendation System
+
+At the end of each blog post, display a “Recommended Workflow” section.
+
+Suggest the best automation workflow based on the workflowType tag or related posts.
+
+Provide links to other relevant blog posts for deeper learning.
+
+Tools Section (Multi-Tool Hub)
+
+General Requirements
+
+Create a dedicated “Tools” hub at /tools/ with links to individual tools.
+
+Each tool should be a separate page (e.g., /tools/calculator, /tools/box-shadow, /tools/converter/png-to-jpg).
+
+All tools must run entirely client-side (no backend, private, serverless).
+
+Tools to Implement
+
+Home Renovation Cost Calculator
+
+Inputs: room size, material type, labor cost, etc.
+
+Output: estimated renovation cost.
+
+CSS Box-Shadow Generator
+
+Inputs: shadow offset, blur, spread, and color.
+
+Output: live preview + generated CSS code for copy.
+
+Local File Converters (run in-browser, private):
+
+PNG → JPG
+
+Word (.docx) → PDF
+
+Other lightweight, client-side conversions using JavaScript APIs.
+
+SEO Optimization (Critical Requirement)
+
+Each tool page must be fully SEO-optimized, including:
+
+Unique title tags (with main keyword).
+
+Meta descriptions targeting long-tail queries.
+
+H1, H2, H3 structure with semantic HTML.
+
+Schema.org structured data for “SoftwareApplication” or “WebApplication.”
+
+Open Graph & Twitter Card metadata for social sharing.
+
+Descriptive alt text for all images/icons.
+
+Canonical URLs to avoid duplicates.
+
+Static, crawlable HTML (no client-side only rendering of main content).
+
+Include FAQ-style expandable sections targeting common search queries (e.g., “How to convert PNG to JPG privately?”).
+
+Add internal links (from blog posts → relevant tool pages, and from tool pages → related blog posts).
+
+User Experience
+
+Each tool must have:
+
+Input fields for user data or file selection.
+
+A button to trigger the calculation/generation/conversion.
+
+A results/output display (text, preview, or downloadable file).
+
+Option to reset inputs.
+
+Provide real-time validation (e.g., block invalid file types).
+
+Use responsive layouts for mobile, tablet, and desktop.
+
+Deliverables
+
+A complete Astro project with:
+
+A blog system focused on automation workflows + recommendations.
+
+A multi-tool hub including:
+
+Home Renovation Cost Calculator
+
+CSS Box-Shadow Generator
+
+Local File Converters (PNG→JPG, Word→PDF, etc.)
+
+Each tool page fully SEO-optimized with metadata, schema, and FAQs.
+
+A static build deployable to GitHub Pages.
+
+Documentation (README.md) covering:
+
+How to add new automation blog posts.
+
+How the recommendation system works.
+
+How to create and add new tools.
+
+How SEO is implemented and how to customize metadata.
+
+Build & deployment instructions for GitHub Pages.
