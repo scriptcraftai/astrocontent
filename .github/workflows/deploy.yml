@@ -23,15 +23,22 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: 18
+          node-version: 20
           cache: npm
       - name: Setup Pages
         id: pages
         uses: actions/configure-pages@v4
       - name: Install dependencies
         run: npm ci
+      - name: Debug Node and NPM versions
+        run: |
+          node --version
+          npm --version
+          ls -la node_modules/.bin/ | grep astro || echo "Astro binaries not found"
       - name: Build
-        run: npx astro build
+        run: |
+          echo "Running Astro build..."
+          npx astro build --verbose
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
