@@ -43,8 +43,13 @@ jobs:
           
       - name: Install dependencies
         run: |
-          echo "=== Installing dependencies ==="
-          npm ci --verbose
+          echo "=== Installing dependencies (npm ci with fallback) ==="
+          if npm ci; then
+            echo "✅ Installed with npm ci"
+          else
+            echo "⚠️ npm ci failed, falling back to npm install"
+            npm install
+          fi
           echo "=== Dependency installation complete ==="
           
       - name: Post-install Debug

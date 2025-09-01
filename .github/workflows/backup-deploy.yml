@@ -28,10 +28,16 @@ jobs:
         id: pages
         uses: actions/configure-pages@v4
         
-      - name: Clean install dependencies
+      - name: Install dependencies
         run: |
-          rm -rf node_modules package-lock.json
-          npm install
+          echo "=== Installing dependencies (npm ci with fallback) ==="
+          if npm ci; then
+            echo "✅ Installed with npm ci"
+          else
+            echo "⚠️ npm ci failed, falling back to npm install"
+            npm install
+          fi
+          echo "=== Dependency installation complete ==="
           
       - name: Try basic build
         run: |
