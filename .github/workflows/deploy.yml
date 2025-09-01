@@ -20,25 +20,59 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
           node-version: 20
           cache: npm
+          
       - name: Setup Pages
         id: pages
         uses: actions/configure-pages@v4
-      - name: Install dependencies
-        run: npm ci
-      - name: Debug Node and NPM versions
+        
+      - name: Debug Environment
         run: |
+          echo "=== Environment Debug ==="
           node --version
           npm --version
-          ls -la node_modules/.bin/ | grep astro || echo "Astro binaries not found"
-      - name: Build
+          pwd
+          ls -la
+          echo "=== Package.json content ==="
+          cat package.json
+          
+      - name: Install dependencies
         run: |
-          echo "Running Astro build..."
-          npx astro build --verbose
+          echo "=== Installing dependencies ==="
+          npm ci --verbose
+          echo "=== Dependency installation complete ==="
+          
+      - name: Post-install Debug
+        run: |
+          echo "=== Post-install Debug ==="
+          ls -la node_modules/.bin/ | grep astro || echo "Astro binaries not found"
+          echo "=== Astro version ==="
+          npx astro --version || echo "Astro version check failed"
+          echo "=== TypeScript check ==="
+          npx astro check || echo "TypeScript check failed but continuing..."
+          
+      - name: Build with error handling
+        run: |
+          echo "=== Starting Astro build ==="
+          set -e
+          npx astro build 2>&1 | tee build.log
+          echo "=== Build completed successfully ==="
+          
+      - name: Debug build output
+        if: always()
+        run: |
+          echo "=== Build directory contents ==="
+          ls -la dist/ || echo "No dist directory found"
+          if [ -f build.log ]; then
+            echo "=== Build log ==="
+            cat build.log
+          fi
+          
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
