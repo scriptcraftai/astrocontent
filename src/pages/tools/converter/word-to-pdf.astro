@@ -265,10 +265,10 @@ const faqs = [
     });
   }
 
-  function displayResults(results) {
+  function displayResults(results: any[]) {
     resultsPanel.classList.remove('hidden');
 
-    results.forEach((result, index) => {
+    results.forEach((result: any, index: number) => {
       const resultDiv = document.createElement('div');
       resultDiv.className = 'bg-gray-50 p-4 rounded-lg';
 
@@ -331,7 +331,7 @@ const faqs = [
     progressBar.style.width = '0%';
   }
 
-  function formatFileSize(bytes: number) {
+  function formatFileSize(bytes: number): string {
     if (bytes === 0) return '0 Bytes';
     const k = 1024;
     const sizes = ['Bytes', 'KB', 'MB', 'GB'];

@@ -175,11 +175,11 @@ const faqs = [
   });
 
   function calculateCost() {
-    const roomType = document.getElementById('room-type').value;
-    const roomSize = parseFloat(document.getElementById('room-size').value);
-    const renovationLevel = document.getElementById('renovation-level').value;
-    const location = document.getElementById('location').value;
-    const additionalWork = Array.from(document.querySelectorAll('input[name="additional"]:checked')).map(cb => cb.value);
+    const roomType = (document.getElementById('room-type') as HTMLSelectElement).value;
+    const roomSize = parseFloat((document.getElementById('room-size') as HTMLInputElement).value);
+    const renovationLevel = (document.getElementById('renovation-level') as HTMLSelectElement).value;
+    const location = (document.getElementById('location') as HTMLSelectElement).value;
+    const additionalWork = Array.from(document.querySelectorAll('input[name="additional"]:checked')).map(cb => (cb as HTMLInputElement).value);
 
     if (!roomType || !roomSize || !renovationLevel || !location) {
       alert('Please fill in all required fields.');
@@ -228,13 +228,13 @@ const faqs = [
     displayResults(breakdown, totalCost);
   }
 
-  function displayResults(breakdown, totalCost) {
+  function displayResults(breakdown: any[], totalCost: number) {
     const resultsDiv = document.getElementById('results');
     const breakdownDiv = document.getElementById('cost-breakdown');
     const totalCostSpan = document.getElementById('total-cost');
 
     breakdownDiv.innerHTML = '';
-    breakdown.forEach(item => {
+    breakdown.forEach((item: any) => {
       const itemDiv = document.createElement('div');
       itemDiv.className = 'flex justify-between items-center';
       itemDiv.innerHTML = `

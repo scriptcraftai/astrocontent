@@ -49,5 +49,5 @@ const socialImage = image ? new URL(image, Astro.site) : new URL('/og-image.png'
 
 <!-- Schema.org structured data -->
 {schema && (
-  <script type="application/ld+json" set:html={JSON.stringify(schema)} />
+  <script is:inline type="application/ld+json" set:html={JSON.stringify(schema)} />
 )}

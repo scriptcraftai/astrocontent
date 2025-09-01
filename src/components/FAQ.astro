@@ -10,7 +10,7 @@ const { questions } = Astro.props;
   <h2 class="text-xl font-semibold mb-4">Frequently Asked Questions</h2>
   
   <div class="space-y-4">
-    {questions.map((faq, index) => (
+    {questions.map((faq) => (
       <details class="group border border-gray-200 rounded-lg">
         <summary class="flex justify-between items-center cursor-pointer p-4 hover:bg-gray-50 transition-colors">
           <h3 class="font-medium text-gray-900">{faq.question}</h3>
@@ -30,7 +30,7 @@ const { questions } = Astro.props;
   </div>
 </div>
 
-<script type="application/ld+json" set:html={JSON.stringify({
+<script is:inline type="application/ld+json" set:html={JSON.stringify({
   "@context": "https://schema.org",
   "@type": "FAQPage",
   "mainEntity": questions.map(faq => ({
