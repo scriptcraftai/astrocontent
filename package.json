@@ -1,0 +1,19 @@
+{
+  "name": "workspace",
+  "version": "1.0.0",
+  "description": "A comprehensive Astro-based static site featuring automation-focused blog content and client-side productivity tools. Built for performance, SEO optimization, and GitHub Pages deployment.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@astrojs/tailwind": "^6.0.2",
+    "@types/node": "^24.3.0",
+    "astro": "^5.13.5",
+    "tailwindcss": "^3.4.17",
+    "typescript": "^5.9.2"
+  }
+}

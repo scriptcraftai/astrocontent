@@ -1,0 +1,58 @@
+---
+import BaseLayout from './BaseLayout.astro';
+import FAQ from '@/components/FAQ.astro';
+
+export interface Props {
+  title: string;
+  description: string;
+  toolName: string;
+  category: string;
+  faqs?: Array<{ question: string; answer: string }>;
+}
+
+const { title, description, toolName, category, faqs = [] } = Astro.props;
+
+const schema = {
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": toolName,
+  "description": description,
+  "applicationCategory": category,
+  "operatingSystem": "Web Browser",
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "USD"
+  }
+};
+---
+
+<BaseLayout 
+  title={title}
+  description={description}
+  schema={schema}
+>
+  <div class="max-w-6xl mx-auto px-4 py-8">
+    <header class="text-center mb-12">
+      <h1 class="text-4xl font-bold mb-4">{toolName}</h1>
+      <p class="text-xl text-gray-600 max-w-2xl mx-auto">{description}</p>
+    </header>
+    
+    <div class="grid lg:grid-cols-3 gap-8">
+      <div class="lg:col-span-2">
+        <slot />
+      </div>
+      
+      <div class="space-y-8">
+        <div class="bg-white p-6 rounded-lg shadow-md">
+          <h2 class="text-xl font-semibold mb-4">How to Use</h2>
+          <slot name="instructions" />
+        </div>
+        
+        {faqs.length > 0 && (
+          <FAQ questions={faqs} />
+        )}
+      </div>
+    </div>
+  </div>
+</BaseLayout>

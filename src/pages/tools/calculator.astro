@@ -1,0 +1,279 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro';
+
+const faqs = [
+  {
+    question: 'How accurate are the renovation cost estimates?',
+    answer: 'Our calculator provides estimates based on typical market rates and industry standards. Actual costs may vary depending on location, specific materials chosen, contractor rates, and project complexity. We recommend getting quotes from multiple contractors for accurate pricing.'
+  },
+  {
+    question: 'What costs are included in the calculation?',
+    answer: 'The calculator includes materials, labor, permits (if applicable), and a buffer for unexpected expenses. It does not include furniture, appliances, or decorative items unless specifically selected.'
+  },
+  {
+    question: 'Can I save or export my calculations?',
+    answer: 'Yes, you can print the results or copy them to your clipboard. We also provide a detailed breakdown that you can share with contractors or use for budgeting purposes.'
+  },
+  {
+    question: 'How often are the cost estimates updated?',
+    answer: 'Our cost database is updated quarterly to reflect current market conditions and material price changes. Regional variations are factored into the calculations.'
+  }
+];
+---
+
+<ToolLayout
+  title="Home Renovation Cost Calculator - Free Estimate Tool"
+  description="Calculate accurate home renovation costs with our free online calculator. Get detailed estimates for materials, labor, and total project costs for any room renovation."
+  toolName="Home Renovation Cost Calculator"
+  category="Home Improvement"
+  faqs={faqs}
+>
+  <div class="bg-white p-6 rounded-lg shadow-md">
+    <form id="renovation-calculator" class="space-y-6">
+      <div class="grid md:grid-cols-2 gap-6">
+        <div>
+          <label for="room-type" class="block text-sm font-medium text-gray-700 mb-2">Room Type</label>
+          <select id="room-type" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+            <option value="">Select room type</option>
+            <option value="kitchen">Kitchen</option>
+            <option value="bathroom">Bathroom</option>
+            <option value="bedroom">Bedroom</option>
+            <option value="living-room">Living Room</option>
+            <option value="basement">Basement</option>
+            <option value="custom">Custom Room</option>
+          </select>
+        </div>
+        
+        <div>
+          <label for="room-size" class="block text-sm font-medium text-gray-700 mb-2">Room Size (sq ft)</label>
+          <input type="number" id="room-size" min="1" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Enter square footage">
+        </div>
+      </div>
+      
+      <div class="grid md:grid-cols-2 gap-6">
+        <div>
+          <label for="renovation-level" class="block text-sm font-medium text-gray-700 mb-2">Renovation Level</label>
+          <select id="renovation-level" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+            <option value="">Select renovation level</option>
+            <option value="cosmetic">Cosmetic (Paint, Fixtures)</option>
+            <option value="moderate">Moderate (Some Structural)</option>
+            <option value="major">Major (Full Renovation)</option>
+            <option value="luxury">Luxury (High-End Materials)</option>
+          </select>
+        </div>
+        
+        <div>
+          <label for="location" class="block text-sm font-medium text-gray-700 mb-2">Location</label>
+          <select id="location" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+            <option value="">Select location</option>
+            <option value="rural">Rural Area</option>
+            <option value="suburban">Suburban</option>
+            <option value="urban">Urban</option>
+            <option value="metropolitan">Major Metropolitan</option>
+          </select>
+        </div>
+      </div>
+      
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-3">Additional Work (Check all that apply)</label>
+        <div class="grid grid-cols-2 gap-3">
+          <label class="flex items-center">
+            <input type="checkbox" name="additional" value="plumbing" class="mr-2">
+            <span class="text-sm">Plumbing Work</span>
+          </label>
+          <label class="flex items-center">
+            <input type="checkbox" name="additional" value="electrical" class="mr-2">
+            <span class="text-sm">Electrical Work</span>
+          </label>
+          <label class="flex items-center">
+            <input type="checkbox" name="additional" value="flooring" class="mr-2">
+            <span class="text-sm">New Flooring</span>
+          </label>
+          <label class="flex items-center">
+            <input type="checkbox" name="additional" value="permits" class="mr-2">
+            <span class="text-sm">Permits Required</span>
+          </label>
+        </div>
+      </div>
+      
+      <div class="flex gap-4">
+        <button type="submit" class="flex-1 bg-blue-600 text-white py-3 px-6 rounded-md hover:bg-blue-700 transition-colors font-medium">
+          Calculate Cost
+        </button>
+        <button type="reset" class="px-6 py-3 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50 transition-colors">
+          Reset
+        </button>
+      </div>
+    </form>
+    
+    <div id="results" class="mt-8 p-6 bg-gray-50 rounded-lg hidden">
+      <h3 class="text-lg font-semibold mb-4 text-gray-900">Estimated Renovation Cost</h3>
+      <div id="cost-breakdown" class="space-y-3"></div>
+      <div class="mt-6 pt-4 border-t border-gray-200">
+        <div class="flex justify-between items-center text-xl font-bold">
+          <span>Total Estimated Cost:</span>
+          <span id="total-cost" class="text-blue-600"></span>
+        </div>
+        <p class="text-sm text-gray-600 mt-2">
+          * Estimates include a 10-20% buffer for unexpected expenses. Actual costs may vary.
+        </p>
+      </div>
+      <div class="mt-4 flex gap-3">
+        <button onclick="printResults()" class="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition-colors">
+          Print Results
+        </button>
+        <button onclick="copyResults()" class="px-4 py-2 bg-purple-600 text-white rounded hover:bg-purple-700 transition-colors">
+          Copy to Clipboard
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div slot="instructions">
+    <ol class="space-y-3 text-gray-600">
+      <li>1. Select your room type and enter the square footage</li>
+      <li>2. Choose the renovation level that matches your project</li>
+      <li>3. Select your location for regional cost adjustments</li>
+      <li>4. Check any additional work required</li>
+      <li>5. Click "Calculate Cost" to get your estimate</li>
+    </ol>
+  </div>
+</ToolLayout>
+
+<script>
+  // Cost per square foot by room type and renovation level
+  const costData = {
+    kitchen: { cosmetic: 25, moderate: 100, major: 200, luxury: 400 },
+    bathroom: { cosmetic: 20, moderate: 80, major: 150, luxury: 300 },
+    bedroom: { cosmetic: 15, moderate: 40, major: 80, luxury: 150 },
+    'living-room': { cosmetic: 18, moderate: 45, major: 90, luxury: 180 },
+    basement: { cosmetic: 20, moderate: 50, major: 100, luxury: 200 },
+    custom: { cosmetic: 20, moderate: 50, major: 100, luxury: 200 }
+  };
+
+  const locationMultipliers = {
+    rural: 0.8,
+    suburban: 1.0,
+    urban: 1.3,
+    metropolitan: 1.6
+  };
+
+  const additionalCosts = {
+    plumbing: 2000,
+    electrical: 1500,
+    flooring: 8,
+    permits: 500
+  };
+
+  document.getElementById('renovation-calculator').addEventListener('submit', function(e) {
+    e.preventDefault();
+    calculateCost();
+  });
+
+  document.getElementById('renovation-calculator').addEventListener('reset', function() {
+    document.getElementById('results').classList.add('hidden');
+  });
+
+  function calculateCost() {
+    const roomType = document.getElementById('room-type').value;
+    const roomSize = parseFloat(document.getElementById('room-size').value);
+    const renovationLevel = document.getElementById('renovation-level').value;
+    const location = document.getElementById('location').value;
+    const additionalWork = Array.from(document.querySelectorAll('input[name="additional"]:checked')).map(cb => cb.value);
+
+    if (!roomType || !roomSize || !renovationLevel || !location) {
+      alert('Please fill in all required fields.');
+      return;
+    }
+
+    // Base cost calculation
+    const baseCostPerSqFt = costData[roomType][renovationLevel];
+    const baseCost = baseCostPerSqFt * roomSize;
+
+    // Location adjustment
+    const locationAdjustedCost = baseCost * locationMultipliers[location];
+
+    // Additional work costs
+    let additionalCostTotal = 0;
+    const breakdown = [];
+
+    breakdown.push({
+      item: `${roomType.replace('-', ' ').toUpperCase()} - ${renovationLevel} renovation (${roomSize} sq ft)`,
+      cost: locationAdjustedCost
+    });
+
+    additionalWork.forEach(work => {
+      let cost = additionalCosts[work];
+      if (work === 'flooring') {
+        cost = cost * roomSize;
+      }
+      additionalCostTotal += cost;
+      breakdown.push({
+        item: work.replace('-', ' ').toUpperCase() + (work === 'flooring' ? ` (${roomSize} sq ft)` : ''),
+        cost: cost
+      });
+    });
+
+    // Add contingency buffer (15%)
+    const subtotal = locationAdjustedCost + additionalCostTotal;
+    const contingency = subtotal * 0.15;
+    breakdown.push({
+      item: 'Contingency Buffer (15%)',
+      cost: contingency
+    });
+
+    const totalCost = subtotal + contingency;
+
+    // Display results
+    displayResults(breakdown, totalCost);
+  }
+
+  function displayResults(breakdown, totalCost) {
+    const resultsDiv = document.getElementById('results');
+    const breakdownDiv = document.getElementById('cost-breakdown');
+    const totalCostSpan = document.getElementById('total-cost');
+
+    breakdownDiv.innerHTML = '';
+    breakdown.forEach(item => {
+      const itemDiv = document.createElement('div');
+      itemDiv.className = 'flex justify-between items-center';
+      itemDiv.innerHTML = `
+        <span class="text-gray-700">${item.item}</span>
+        <span class="font-medium">$${item.cost.toLocaleString()}</span>
+      `;
+      breakdownDiv.appendChild(itemDiv);
+    });
+
+    totalCostSpan.textContent = `$${totalCost.toLocaleString()}`;
+    resultsDiv.classList.remove('hidden');
+    resultsDiv.scrollIntoView({ behavior: 'smooth' });
+  }
+
+  function printResults() {
+    const resultsContent = document.getElementById('results').innerHTML;
+    const printWindow = window.open('', '_blank');
+    printWindow.document.write(`
+      <html>
+        <head><title>Renovation Cost Estimate</title></head>
+        <body style="font-family: Arial, sans-serif; padding: 20px;">
+          <h1>Home Renovation Cost Estimate</h1>
+          ${resultsContent}
+        </body>
+      </html>
+    `);
+    printWindow.document.close();
+    printWindow.print();
+  }
+
+  function copyResults() {
+    const breakdown = document.getElementById('cost-breakdown').textContent;
+    const total = document.getElementById('total-cost').textContent;
+    const text = `Home Renovation Cost Estimate\n\n${breakdown}\n\nTotal: ${total}`;
+    
+    navigator.clipboard.writeText(text).then(() => {
+      alert('Results copied to clipboard!');
+    }).catch(() => {
+      alert('Failed to copy to clipboard. Please try selecting and copying manually.');
+    });
+  }
+</script>

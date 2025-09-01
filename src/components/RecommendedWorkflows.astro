@@ -1,0 +1,54 @@
+---
+import { getCollection } from 'astro:content';
+import { getRecommendations } from '@/utils/recommendations';
+
+export interface Props {
+  workflowType: string;
+  currentSlug: string;
+}
+
+const { workflowType, currentSlug } = Astro.props;
+
+const allPosts = await getCollection('blog');
+const recommendations = getRecommendations(allPosts, workflowType, currentSlug);
+---
+
+{recommendations.length > 0 && (
+  <section class="mt-12 p-6 bg-blue-50 rounded-lg">
+    <h2 class="text-2xl font-bold mb-6 text-gray-900">Recommended Workflows</h2>
+    
+    <div class="grid md:grid-cols-2 gap-6">
+      {recommendations.map(post => (
+        <div class="bg-white p-4 rounded-lg shadow-sm hover:shadow-md transition-shadow">
+          <h3 class="text-lg font-semibold mb-2">
+            <a href={`/blog/${post.slug}`} class="text-blue-600 hover:text-blue-800">
+              {post.data.title}
+            </a>
+          </h3>
+          <p class="text-gray-600 text-sm mb-3">{post.data.description}</p>
+          <span class="px-2 py-1 bg-blue-100 text-blue-800 rounded text-xs">
+            {post.data.workflowType}
+          </span>
+        </div>
+      ))}
+    </div>
+    
+    <div class="mt-6 p-4 bg-white rounded-lg border border-blue-200">
+      <h3 class="font-semibold mb-2 text-gray-900">Try Our Tools</h3>
+      <p class="text-sm text-gray-600 mb-3">
+        Enhance your workflows with our free automation tools:
+      </p>
+      <div class="flex flex-wrap gap-2">
+        <a href="/tools/calculator" class="px-3 py-1 bg-green-100 text-green-800 rounded text-sm hover:bg-green-200 transition-colors">
+          Cost Calculator
+        </a>
+        <a href="/tools/box-shadow" class="px-3 py-1 bg-purple-100 text-purple-800 rounded text-sm hover:bg-purple-200 transition-colors">
+          CSS Generator
+        </a>
+        <a href="/tools/converter/png-to-jpg" class="px-3 py-1 bg-orange-100 text-orange-800 rounded text-sm hover:bg-orange-200 transition-colors">
+          File Converter
+        </a>
+      </div>
+    </div>
+  </section>
+)}

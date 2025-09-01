@@ -1,0 +1,51 @@
+---
+import { formatDate } from '@/utils/seo';
+
+export interface Props {
+  title: string;
+  description: string;
+  date: string;
+  slug: string;
+  workflowType: string;
+  tags: string[];
+}
+
+const { title, description, date, slug, workflowType, tags } = Astro.props;
+---
+
+<article class="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300">
+  <div class="p-6">
+    <div class="flex items-center justify-between mb-3">
+      <time class="text-sm text-gray-500" datetime={date}>
+        {formatDate(new Date(date))}
+      </time>
+      <span class="px-2 py-1 bg-blue-100 text-blue-800 rounded-full text-xs">
+        {workflowType}
+      </span>
+    </div>
+    
+    <h2 class="text-xl font-semibold mb-3 text-gray-900 hover:text-blue-600 transition-colors">
+      <a href={`/blog/${slug}`}>{title}</a>
+    </h2>
+    
+    <p class="text-gray-600 mb-4 line-clamp-3">{description}</p>
+    
+    <div class="flex flex-wrap gap-2 mb-4">
+      {tags.slice(0, 3).map(tag => (
+        <span class="px-2 py-1 bg-gray-100 text-gray-600 rounded text-xs">
+          #{tag}
+        </span>
+      ))}
+    </div>
+    
+    <a 
+      href={`/blog/${slug}`} 
+      class="inline-flex items-center text-blue-600 hover:text-blue-800 font-medium transition-colors"
+    >
+      Read More
+      <svg class="w-4 h-4 ml-1" fill="currentColor" viewBox="0 0 20 20">
+        <path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+      </svg>
+    </a>
+  </div>
+</article>

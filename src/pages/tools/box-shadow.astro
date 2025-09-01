@@ -1,0 +1,289 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro';
+
+const faqs = [
+  {
+    question: 'What is CSS box-shadow and how does it work?',
+    answer: 'CSS box-shadow creates shadow effects around an element. It accepts values for horizontal offset, vertical offset, blur radius, spread radius, and color. Multiple shadows can be applied by separating them with commas.'
+  },
+  {
+    question: 'Can I use multiple shadows on one element?',
+    answer: 'Yes! You can create multiple shadows by separating each shadow declaration with a comma. This generator supports adding multiple shadows with different properties.'
+  },
+  {
+    question: 'What browsers support box-shadow?',
+    answer: 'Box-shadow is supported in all modern browsers including Chrome, Firefox, Safari, and Edge. For older browsers, you may need vendor prefixes like -webkit-box-shadow or -moz-box-shadow.'
+  },
+  {
+    question: 'How do I create an inset shadow?',
+    answer: 'Add the "inset" keyword before the shadow values to create an inner shadow effect. This is useful for creating pressed button effects or inner glows.'
+  }
+];
+---
+
+<ToolLayout
+  title="CSS Box-Shadow Generator - Create Beautiful Shadows Online"
+  description="Generate CSS box-shadow code with live preview. Easily create beautiful shadow effects for your web elements with real-time visual feedback and copy-to-clipboard functionality."
+  toolName="CSS Box-Shadow Generator"
+  category="Web Development"
+  faqs={faqs}
+>
+  <div class="bg-white p-6 rounded-lg shadow-md">
+    <div class="grid lg:grid-cols-2 gap-8">
+      <!-- Controls -->
+      <div class="space-y-6">
+        <h3 class="text-lg font-semibold text-gray-900">Shadow Properties</h3>
+        
+        <div class="space-y-4">
+          <div>
+            <label for="horizontal-offset" class="block text-sm font-medium text-gray-700 mb-2">
+              Horizontal Offset: <span id="h-offset-value">0</span>px
+            </label>
+            <input type="range" id="horizontal-offset" min="-50" max="50" value="0" 
+                   class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer">
+          </div>
+          
+          <div>
+            <label for="vertical-offset" class="block text-sm font-medium text-gray-700 mb-2">
+              Vertical Offset: <span id="v-offset-value">0</span>px
+            </label>
+            <input type="range" id="vertical-offset" min="-50" max="50" value="0" 
+                   class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer">
+          </div>
+          
+          <div>
+            <label for="blur-radius" class="block text-sm font-medium text-gray-700 mb-2">
+              Blur Radius: <span id="blur-value">10</span>px
+            </label>
+            <input type="range" id="blur-radius" min="0" max="100" value="10" 
+                   class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer">
+          </div>
+          
+          <div>
+            <label for="spread-radius" class="block text-sm font-medium text-gray-700 mb-2">
+              Spread Radius: <span id="spread-value">0</span>px
+            </label>
+            <input type="range" id="spread-radius" min="-20" max="20" value="0" 
+                   class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer">
+          </div>
+          
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <label for="shadow-color" class="block text-sm font-medium text-gray-700 mb-2">Shadow Color</label>
+              <input type="color" id="shadow-color" value="#000000" 
+                     class="w-full h-10 border border-gray-300 rounded cursor-pointer">
+            </div>
+            
+            <div>
+              <label for="shadow-opacity" class="block text-sm font-medium text-gray-700 mb-2">
+                Opacity: <span id="opacity-value">25</span>%
+              </label>
+              <input type="range" id="shadow-opacity" min="0" max="100" value="25" 
+                     class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer">
+            </div>
+          </div>
+          
+          <div class="flex items-center">
+            <input type="checkbox" id="inset-shadow" class="mr-2">
+            <label for="inset-shadow" class="text-sm font-medium text-gray-700">Inset Shadow</label>
+          </div>
+        </div>
+        
+        <div class="space-y-4">
+          <h4 class="font-medium text-gray-900">Quick Presets</h4>
+          <div class="grid grid-cols-2 gap-2">
+            <button onclick="applyPreset('subtle')" class="px-3 py-2 text-sm bg-gray-100 hover:bg-gray-200 rounded transition-colors">
+              Subtle
+            </button>
+            <button onclick="applyPreset('medium')" class="px-3 py-2 text-sm bg-gray-100 hover:bg-gray-200 rounded transition-colors">
+              Medium
+            </button>
+            <button onclick="applyPreset('large')" class="px-3 py-2 text-sm bg-gray-100 hover:bg-gray-200 rounded transition-colors">
+              Large
+            </button>
+            <button onclick="applyPreset('colored')" class="px-3 py-2 text-sm bg-gray-100 hover:bg-gray-200 rounded transition-colors">
+              Colored
+            </button>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Preview -->
+      <div class="space-y-6">
+        <h3 class="text-lg font-semibold text-gray-900">Live Preview</h3>
+        
+        <div class="bg-gray-100 p-12 rounded-lg min-h-[300px] flex items-center justify-center">
+          <div id="preview-element" class="w-32 h-32 bg-white rounded-lg flex items-center justify-center text-gray-600 font-medium">
+            Preview
+          </div>
+        </div>
+        
+        <div>
+          <label for="css-output" class="block text-sm font-medium text-gray-700 mb-2">Generated CSS</label>
+          <textarea id="css-output" rows="3" readonly
+                    class="w-full px-3 py-2 border border-gray-300 rounded-md bg-gray-50 font-mono text-sm resize-none focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
+          <button onclick="copyCSSCode()" class="mt-2 w-full px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors">
+            Copy CSS Code
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div slot="instructions">
+    <ol class="space-y-3 text-gray-600">
+      <li>1. Adjust the horizontal and vertical offset sliders</li>
+      <li>2. Set the blur radius for shadow softness</li>
+      <li>3. Use spread radius to make shadow larger or smaller</li>
+      <li>4. Choose shadow color and opacity</li>
+      <li>5. Toggle inset for inner shadow effect</li>
+      <li>6. Copy the generated CSS code to your project</li>
+    </ol>
+  </div>
+</ToolLayout>
+
+<script>
+  // Shadow property elements
+  const hOffset = document.getElementById('horizontal-offset');
+  const vOffset = document.getElementById('vertical-offset');
+  const blurRadius = document.getElementById('blur-radius');
+  const spreadRadius = document.getElementById('spread-radius');
+  const shadowColor = document.getElementById('shadow-color');
+  const shadowOpacity = document.getElementById('shadow-opacity');
+  const insetShadow = document.getElementById('inset-shadow');
+  
+  // Value display elements
+  const hOffsetValue = document.getElementById('h-offset-value');
+  const vOffsetValue = document.getElementById('v-offset-value');
+  const blurValue = document.getElementById('blur-value');
+  const spreadValue = document.getElementById('spread-value');
+  const opacityValue = document.getElementById('opacity-value');
+  
+  // Preview and output elements
+  const previewElement = document.getElementById('preview-element');
+  const cssOutput = document.getElementById('css-output');
+
+  // Presets
+  const presets = {
+    subtle: { h: 0, v: 1, blur: 3, spread: 0, color: '#000000', opacity: 12, inset: false },
+    medium: { h: 0, v: 4, blur: 6, spread: -1, color: '#000000', opacity: 25, inset: false },
+    large: { h: 0, v: 10, blur: 15, spread: -3, color: '#000000', opacity: 25, inset: false },
+    colored: { h: 0, v: 4, blur: 14, spread: 0, color: '#3b82f6', opacity: 40, inset: false }
+  };
+
+  // Event listeners
+  [hOffset, vOffset, blurRadius, spreadRadius, shadowColor, shadowOpacity, insetShadow].forEach(element => {
+    element.addEventListener('input', updateShadow);
+  });
+
+  function updateShadow() {
+    // Update value displays
+    hOffsetValue.textContent = hOffset.value;
+    vOffsetValue.textContent = vOffset.value;
+    blurValue.textContent = blurRadius.value;
+    spreadValue.textContent = spreadRadius.value;
+    opacityValue.textContent = shadowOpacity.value;
+
+    // Generate shadow
+    const h = hOffset.value;
+    const v = vOffset.value;
+    const blur = blurRadius.value;
+    const spread = spreadRadius.value;
+    const color = shadowColor.value;
+    const opacity = shadowOpacity.value / 100;
+    const inset = insetShadow.checked ? 'inset ' : '';
+
+    // Convert hex to rgba
+    const r = parseInt(color.substr(1, 2), 16);
+    const g = parseInt(color.substr(3, 2), 16);
+    const b = parseInt(color.substr(5, 2), 16);
+    
+    const shadowValue = `${inset}${h}px ${v}px ${blur}px ${spread}px rgba(${r}, ${g}, ${b}, ${opacity})`;
+    
+    // Apply to preview
+    previewElement.style.boxShadow = shadowValue;
+    
+    // Update CSS output
+    cssOutput.value = `box-shadow: ${shadowValue};`;
+  }
+
+  function applyPreset(presetName) {
+    const preset = presets[presetName];
+    
+    hOffset.value = preset.h;
+    vOffset.value = preset.v;
+    blurRadius.value = preset.blur;
+    spreadRadius.value = preset.spread;
+    shadowColor.value = preset.color;
+    shadowOpacity.value = preset.opacity;
+    insetShadow.checked = preset.inset;
+    
+    updateShadow();
+  }
+
+  function copyCSSCode() {
+    cssOutput.select();
+    cssOutput.setSelectionRange(0, 99999); // For mobile devices
+
+    navigator.clipboard.writeText(cssOutput.value).then(() => {
+      // Visual feedback
+      const button = event.target;
+      const originalText = button.textContent;
+      button.textContent = 'Copied!';
+      button.classList.add('bg-green-600', 'hover:bg-green-700');
+      button.classList.remove('bg-blue-600', 'hover:bg-blue-700');
+      
+      setTimeout(() => {
+        button.textContent = originalText;
+        button.classList.remove('bg-green-600', 'hover:bg-green-700');
+        button.classList.add('bg-blue-600', 'hover:bg-blue-700');
+      }, 2000);
+    }).catch(() => {
+      alert('Failed to copy to clipboard. Please select and copy manually.');
+    });
+  }
+
+  // Initialize with default shadow
+  updateShadow();
+</script>
+
+<style>
+  /* Custom range slider styles */
+  input[type="range"] {
+    -webkit-appearance: none;
+    appearance: none;
+    background: transparent;
+  }
+
+  input[type="range"]::-webkit-slider-track {
+    background: #e5e7eb;
+    height: 8px;
+    border-radius: 4px;
+  }
+
+  input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    background: #3b82f6;
+    height: 20px;
+    width: 20px;
+    border-radius: 50%;
+    cursor: pointer;
+  }
+
+  input[type="range"]::-moz-range-track {
+    background: #e5e7eb;
+    height: 8px;
+    border-radius: 4px;
+    border: none;
+  }
+
+  input[type="range"]::-moz-range-thumb {
+    background: #3b82f6;
+    height: 20px;
+    width: 20px;
+    border-radius: 50%;
+    cursor: pointer;
+    border: none;
+  }
+</style>

@@ -1,0 +1,50 @@
+---
+import Navigation from '@/components/Navigation.astro';
+import SEOHead from '@/components/SEOHead.astro';
+
+export interface Props {
+  title: string;
+  description: string;
+  image?: string;
+  type?: string;
+  schema?: any;
+}
+
+const { title, description, image, type = 'website', schema } = Astro.props;
+---
+
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <SEOHead 
+    title={title}
+    description={description}
+    image={image}
+    type={type}
+    schema={schema}
+  />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body class="bg-gray-50 text-gray-900 min-h-screen">
+  <Navigation />
+  <main>
+    <slot />
+  </main>
+  
+  <footer class="bg-gray-800 text-white py-12 mt-16">
+    <div class="max-w-6xl mx-auto px-4 text-center">
+      <p>&copy; 2025 Automation Hub. Built with Astro for modern workflows.</p>
+      <div class="mt-4 space-x-6">
+        <a href="/blog" class="hover:text-blue-400 transition-colors">Blog</a>
+        <a href="/tools" class="hover:text-blue-400 transition-colors">Tools</a>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>
+
+<style is:global>
+  @import '../styles/global.css';
+</style>
