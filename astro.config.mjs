@@ -3,8 +3,8 @@ import tailwind from '@astrojs/tailwind';
 
 // https://astro.build/config
 export default defineConfig({
-  site: 'https://yourusername.github.io',
-  base: '/your-repo-name',
+  site: 'https://scriptcraftai.github.io',
+  base: '/astrocontent',
   integrations: [tailwind()],
   markdown: {
     shikiConfig: {

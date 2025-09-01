@@ -2,7 +2,7 @@ User-agent: *
 Allow: /
 
 # Sitemaps
-Sitemap: https://yourusername.github.io/your-repo-name/sitemap.xml
+Sitemap: https://scriptcraftai.github.io/astrocontent/sitemap.xml
 
 # Disallow certain paths if needed
 # Disallow: /admin/
