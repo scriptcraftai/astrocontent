@@ -119,20 +119,6 @@ const faqs = [
         </div>
       </div>
       
-      <!-- Feature Notice -->
-      <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
-        <div class="flex items-start">
-          <svg class="flex-shrink-0 w-5 h-5 text-yellow-400 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
-            <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
-          </svg>
-          <div class="ml-3">
-            <h3 class="text-sm font-medium text-yellow-800">Development Note</h3>
-            <div class="mt-2 text-sm text-yellow-700">
-              <p>This Word to PDF converter is currently in development and requires additional JavaScript libraries for full functionality. The interface is ready, but the actual conversion requires integration with libraries like pdf-lib or mammoth.js.</p>
-            </div>
-          </div>
-        </div>
-      </div>
     </div>
   </div>
 
@@ -223,25 +209,36 @@ const faqs = [
     };
 
     try {
-      // Note: This is a placeholder implementation
-      // In a real implementation, you would use libraries like:
-      // - mammoth.js for reading DOCX files
-      // - pdf-lib or jsPDF for creating PDFs
+      // Dynamic imports for browser compatibility
+      const [mammoth, PDFLib] = await Promise.all([
+        import('mammoth'),
+        import('pdf-lib')
+      ]);
       
       const results = [];
       
       for (let i = 0; i < selectedFiles.length; i++) {
         const file = selectedFiles[i];
         
-        // Simulate conversion process
-        await simulateConversion(file, settings);
-        
-        results.push({
-          originalFile: file,
-          fileName: file.name.replace('.docx', '.pdf'),
-          success: false, // Set to false since this is a demo
-          message: 'Conversion requires additional libraries (mammoth.js, pdf-lib)'
-        });
+        try {
+          const pdfBlob = await convertWordToPDF(file, settings, mammoth, PDFLib);
+          
+          results.push({
+            originalFile: file,
+            convertedBlob: pdfBlob,
+            fileName: file.name.replace('.docx', '.pdf'),
+            originalSize: file.size,
+            newSize: pdfBlob.size,
+            success: true
+          });
+        } catch (error) {
+          results.push({
+            originalFile: file,
+            fileName: file.name.replace('.docx', '.pdf'),
+            success: false,
+            message: error.message
+          });
+        }
         
         // Update progress
         const progress = ((i + 1) / selectedFiles.length) * 100;
@@ -254,15 +251,81 @@ const faqs = [
       
     } catch (error) {
       progressPanel.classList.add('hidden');
-      alert('Error converting documents: ' + error.message);
+      alert('Error loading conversion libraries: ' + error.message);
     }
   }
 
-  async function simulateConversion(file: File, settings: any) {
-    // Simulate processing time
-    return new Promise(resolve => {
-      setTimeout(resolve, 1000 + Math.random() * 2000);
-    });
+  async function convertWordToPDF(file: File, settings: any, mammoth: any, PDFLib: any) {
+    // Read the DOCX file
+    const arrayBuffer = await file.arrayBuffer();
+    
+    // Extract HTML from DOCX using mammoth
+    const result = await mammoth.convertToHtml({ arrayBuffer });
+    const htmlContent = result.value;
+    
+    // Create a new PDF document
+    const pdfDoc = await PDFLib.PDFDocument.create();
+    
+    // Set page size
+    let pageSize = PDFLib.PageSizes.A4;
+    if (settings.pageSize === 'letter') pageSize = PDFLib.PageSizes.Letter;
+    if (settings.pageSize === 'legal') pageSize = PDFLib.PageSizes.Legal;
+    
+    // Add a page
+    const page = pdfDoc.addPage(pageSize);
+    const { width, height } = page.getSize();
+    
+    // Basic text extraction (simplified approach)
+    const textContent = htmlContent.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
+    
+    // Add text to PDF (basic implementation)
+    const fontSize = 12;
+    const margin = 50;
+    const lineHeight = 18;
+    const maxWidth = width - (margin * 2);
+    
+    const font = await pdfDoc.embedFont(PDFLib.StandardFonts.Helvetica);
+    
+    // Split text into lines that fit the page
+    const words = textContent.split(' ');
+    const lines = [];
+    let currentLine = '';
+    
+    for (const word of words) {
+      const testLine = currentLine + (currentLine ? ' ' : '') + word;
+      const textWidth = font.widthOfTextAtSize(testLine, fontSize);
+      
+      if (textWidth <= maxWidth) {
+        currentLine = testLine;
+      } else {
+        if (currentLine) lines.push(currentLine);
+        currentLine = word;
+      }
+    }
+    if (currentLine) lines.push(currentLine);
+    
+    // Add text to page
+    let y = height - margin;
+    for (let i = 0; i < lines.length && y > margin; i++) {
+      page.drawText(lines[i], {
+        x: margin,
+        y: y,
+        size: fontSize,
+        font: font,
+        color: PDFLib.rgb(0, 0, 0)
+      });
+      y -= lineHeight;
+      
+      // Add new page if needed
+      if (y <= margin && i < lines.length - 1) {
+        const newPage = pdfDoc.addPage(pageSize);
+        y = newPage.getSize().height - margin;
+      }
+    }
+    
+    // Generate PDF bytes
+    const pdfBytes = await pdfDoc.save();
+    return new Blob([pdfBytes], { type: 'application/pdf' });
   }
 
   function displayResults(results: any[]) {
@@ -273,13 +336,17 @@ const faqs = [
       resultDiv.className = 'bg-gray-50 p-4 rounded-lg';
 
       if (result.success) {
+        const compressionInfo = result.originalSize && result.newSize ? 
+          `${formatFileSize(result.originalSize)} → ${formatFileSize(result.newSize)}` : '';
+        
         resultDiv.innerHTML = `
-          <div class="flex items-center justify-between">
+          <div class="flex items-center justify-between mb-3">
             <div>
               <h4 class="font-medium text-gray-900">${result.fileName}</h4>
               <p class="text-sm text-green-600">✓ Converted successfully</p>
+              ${compressionInfo ? `<p class="text-sm text-gray-500">${compressionInfo}</p>` : ''}
             </div>
-            <button onclick="downloadFile('${index}')" class="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition-colors">
+            <button onclick="downloadPDFFile('${index}')" class="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition-colors">
               Download PDF
             </button>
           </div>
@@ -292,7 +359,7 @@ const faqs = [
             </svg>
             <div>
               <h4 class="font-medium text-gray-900">${result.originalFile.name}</h4>
-              <p class="text-sm text-red-600">Conversion not available</p>
+              <p class="text-sm text-red-600">Conversion failed</p>
               <p class="text-sm text-gray-500 mt-1">${result.message}</p>
             </div>
           </div>
@@ -302,23 +369,42 @@ const faqs = [
       resultsContainer.appendChild(resultDiv);
     });
 
-    // Add implementation note
-    const noteDiv = document.createElement('div');
-    noteDiv.className = 'bg-blue-50 border border-blue-200 rounded-lg p-4 mt-4';
-    noteDiv.innerHTML = `
-      <div class="flex items-start">
-        <svg class="flex-shrink-0 w-5 h-5 text-blue-400 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
-          <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path>
-        </svg>
-        <div class="ml-3">
-          <h3 class="text-sm font-medium text-blue-800">Implementation Required</h3>
-          <p class="mt-1 text-sm text-blue-700">
-            To enable Word to PDF conversion, integrate libraries like <code>mammoth.js</code> for reading DOCX files and <code>pdf-lib</code> or <code>jsPDF</code> for generating PDFs. This would provide fully client-side document conversion.
-          </p>
-        </div>
-      </div>
-    `;
-    resultsContainer.appendChild(noteDiv);
+    // Store results globally for download function
+    (window as any).pdfConversionResults = results;
+
+    // Add download all button for successful conversions
+    const successfulResults = results.filter(r => r.success);
+    if (successfulResults.length > 1) {
+      const downloadAllBtn = document.createElement('button');
+      downloadAllBtn.className = 'w-full mt-4 px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors';
+      downloadAllBtn.textContent = `Download All ${successfulResults.length} PDF Files`;
+      downloadAllBtn.onclick = downloadAllPDFs;
+      resultsContainer.appendChild(downloadAllBtn);
+    }
+  }
+
+  function downloadPDFFile(index: number) {
+    const result = (window as any).pdfConversionResults[index];
+    if (result.success && result.convertedBlob) {
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(result.convertedBlob);
+      link.download = result.fileName;
+      link.click();
+      URL.revokeObjectURL(link.href);
+    }
+  }
+
+  function downloadAllPDFs() {
+    const results = (window as any).pdfConversionResults.filter((r: any) => r.success);
+    results.forEach((result: any, index: number) => {
+      setTimeout(() => {
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(result.convertedBlob);
+        link.download = result.fileName;
+        link.click();
+        URL.revokeObjectURL(link.href);
+      }, index * 100);
+    });
   }
 
   function resetConverter() {
