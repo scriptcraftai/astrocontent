@@ -1,13 +1,18 @@
 // src/paths.ts
 
-// Astro injects BASE_URL automatically depending on deployment (e.g. GitHub Pages repo name)
-const BASE_URL = import.meta.env.BASE_URL;
+// Automatically detect GitHub Pages repo name as base path
+const repoName = "astrocontent"; // Change ONLY if repo name changes
+const isGitHubPages = import.meta.env.MODE === "production";
 
-// Build helper to safely join paths with BASE_URL
-const withBase = (path: string) => `${BASE_URL.replace(/\/$/, '')}${path}`;
+const base =
+  isGitHubPages ? `/${repoName}/` : "/";
 
-export const PATHS = {
-  home: withBase('/'),
-  blog: withBase('/blog'),
-  tools: withBase('/tools'),
+const paths = {
+  home: base,
+  blog: base + "blog",
+  tools: base + "tools",
+  about: base + "about",
+  contact: base + "contact",
 };
+
+export default paths;
