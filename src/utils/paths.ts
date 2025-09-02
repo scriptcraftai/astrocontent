@@ -1,11 +1,10 @@
 // src/paths.ts
 
-// Automatically detect GitHub Pages repo name as base path
-const repoName = "astrocontent"; // Change ONLY if repo name changes
+// Keep in sync with astro.config.mjs
+const repoName = "astrocontent"; 
 const isGitHubPages = import.meta.env.MODE === "production";
 
-const base =
-  isGitHubPages ? `/${repoName}/` : "/";
+const base = isGitHubPages ? `/${repoName}/` : "/";
 
 const paths = {
   home: base,
