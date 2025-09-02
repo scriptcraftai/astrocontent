@@ -1,17 +1,20 @@
 ---
+import { PATHS } from '../paths'; // adjust path if needed
+
 const currentPath = Astro.url.pathname;
 
 const navItems = [
-  { name: 'Home', href: '/' },
-  { name: 'Blog', href: '/blog' },
-  { name: 'Tools', href: '/tools' },
+  { name: 'Home', href: PATHS.home },
+  { name: 'Blog', href: PATHS.blog },
+  { name: 'Tools', href: PATHS.tools },
 ];
 ---
 
 <nav class="bg-white shadow-sm border-b border-gray-200">
   <div class="max-w-6xl mx-auto px-4">
     <div class="flex justify-between items-center h-16">
-      <a href="/" class="flex items-center space-x-2">
+      <!-- Logo now points to PATHS.home -->
+      <a href={PATHS.home} class="flex items-center space-x-2">
         <svg class="w-8 h-8 text-blue-600" fill="currentColor" viewBox="0 0 24 24">
           <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
         </svg>
@@ -23,7 +26,7 @@ const navItems = [
           <a 
             href={item.href}
             class={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${
-              currentPath === item.href || (item.href !== '/' && currentPath.startsWith(item.href))
+              currentPath === item.href || (item.href !== PATHS.home && currentPath.startsWith(item.href))
                 ? 'bg-blue-100 text-blue-700'
                 : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
             }`}
@@ -48,7 +51,7 @@ const navItems = [
           <a 
             href={item.href}
             class={`block px-3 py-2 rounded-md text-base font-medium transition-colors ${
-              currentPath === item.href || (item.href !== '/' && currentPath.startsWith(item.href))
+              currentPath === item.href || (item.href !== PATHS.home && currentPath.startsWith(item.href))
                 ? 'bg-blue-100 text-blue-700'
                 : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
             }`}
