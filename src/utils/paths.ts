@@ -1,31 +1,13 @@
-/**
- * Utility functions for handling internal paths in GitHub Pages deployment
- */
+// src/paths.ts
 
-// Get the base path from astro config
-const basePath = import.meta.env.BASE_URL || '/';
+// Astro injects BASE_URL automatically depending on deployment (e.g. GitHub Pages repo name)
+const BASE_URL = import.meta.env.BASE_URL;
 
-/**
- * Creates a properly prefixed internal link for GitHub Pages
- * @param path - The internal path (e.g., '/blog', '/tools/calculator')
- * @returns - The full path with base URL (e.g., '/astrocontent/blog')
- */
-export function createInternalLink(path: string): string {
-  // Remove leading slash if present to avoid double slashes
-  const cleanPath = path.startsWith('/') ? path.slice(1) : path;
-  
-  // If we're in development or base is just '/', return the original path
-  if (basePath === '/' || import.meta.env.DEV) {
-    return `/${cleanPath}`;
-  }
-  
-  // For production GitHub Pages, prepend the base path with proper slash
-  return `${basePath}/${cleanPath}`;
-}
+// Build helper to safely join paths with BASE_URL
+const withBase = (path: string) => `${BASE_URL.replace(/\/$/, '')}${path}`;
 
-/**
- * Creates a home page link
- */
-export function createHomeLink(): string {
-  return basePath === '/' ? '/' : basePath;
-}
+export const PATHS = {
+  home: withBase('/'),
+  blog: withBase('/blog'),
+  tools: withBase('/tools'),
+};
